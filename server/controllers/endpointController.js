@@ -34,4 +34,70 @@ const createEndPoint = async(req, res) => {
     }
 };
 
-export {getEndPoints, createEndPoint};
+const getEndpointById = async(req,res) => {
+    try{
+        const endpoint = await Endpoint.findById(req.params.id);
+        if(endpoint){
+            res.json(endpoint);
+
+        }
+        else{
+        res.status(404).json({message : 'Endpoint not found'});
+        }
+    }
+    catch(error){
+        res.status(500).json({message : "Server error"});
+
+    }
+};
+
+const updateEndPoint = async(req, res) => {
+    const {name, url} = req.body;
+    try{
+        const endpoint = await Endpoint.findById(req.params.id);
+        if(endpoint){
+            endpoint.name = name || endpoint.name;
+            endpoint.url = url || endpoint.url;
+
+            const updateEndPoint = await endpoint.save();
+            res.json(updateEndPoint);
+
+        }
+        else{
+            res.status(404).json({message : 'Endpoint not found'});
+        }
+
+    }
+    catch(error){
+        res.status(500).json({message : 'Server error'});
+
+    }
+};
+
+const deleteEndPoint = async(req,res) => {
+    try{
+        const endpoint = await Endpoint.findById(req.params.id);
+        if(endpoint){
+            await endpoint.deleteOne();
+            res.json({message : 'Endpoint removed'});
+
+        }
+        else{
+            res.status(404).json({message : 'Endpoint not found'});
+
+        }
+        
+    }
+    catch(error){
+        res.status(500).json({message : 'Server error'});
+    }
+
+};
+
+export {
+        getEndPoints,
+        createEndPoint,
+        getEndpointById,
+        updateEndPoint,
+        deleteEndPoint,
+};
