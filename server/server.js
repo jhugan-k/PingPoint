@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import endpointRoutes from './routes/endpointRoutes.js'; // Now grouped with other imports
-
+import startMonitoring from './jobs/monitoringJob.js';
 // Load environment variables
 dotenv.config();
 
@@ -19,6 +19,9 @@ const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
     console.log('MongoDB Connected successfully!');
+
+    startMonitoring();
+    
   } catch (error) {
     console.error(`Error connecting to MongoDB: ${error.message}`);
     process.exit(1); // Exit the process with failure
