@@ -16,7 +16,7 @@ const AddEndpointForm = ({ onEndpointAdded }) => {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/api/endpoints', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/endpoints`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -11,7 +11,7 @@ function App() {
   // This function is now lean. Its only job is to fetch and update data.
   const fetchEndpoints = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/endpoints');
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/endpoints`);
       if (!response.ok) {
         // If a poll fails, we don't want to crash the whole page with an error.
         // We log it and the next poll will try again.
