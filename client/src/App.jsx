@@ -56,6 +56,7 @@ function App() {
     fetchEndpoints(); // Initial fetch
     const intervalId = setInterval(fetchEndpoints, 5000); // Poll every 5 seconds
     return () => clearInterval(intervalId); // Cleanup
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // The empty array is correct.
 
   // This logic now correctly decides what to show on the page.
