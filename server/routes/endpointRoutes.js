@@ -1,20 +1,23 @@
 import express from 'express';
-import{
-    getEndPoints,
-    getEndpointById,
-    updateEndPoint,
-    deleteEndPoint,
-    createEndPoint,
-
+// Using your exact function names
+import {
+  getEndPoints,
+  createEndPoint,
+  getEndpointById,
+  updateEndPoint,
+  deleteEndPoint,
 } from '../controllers/endpointController.js';
+import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
-router.route('/').get(getEndPoints).post(createEndPoint);
 
-router
-    .route('/:id')
-    .get(getEndpointById)
-    .put(updateEndPoint)
-    .delete(deleteEndPoint);
+router.route('/')
+  .get(protect, getEndPoints) // Uses getEndPoints
+  .post(protect, createEndPoint); // Uses createEndPoint
+
+router.route('/:id')
+  .get(protect, getEndpointById)
+  .put(protect, updateEndPoint) // Uses updateEndPoint
+  .delete(protect, deleteEndPoint); // Uses deleteEndPoint
 
 export default router;

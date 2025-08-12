@@ -1,4 +1,5 @@
 import express from 'express';
+import userRoutes from './routes/userRoutes.js'
 import dotenv from 'dotenv';
 import cors from 'cors';
 import mongoose from 'mongoose';
@@ -33,6 +34,7 @@ connectDB();
 // --- Mount Routes ---
 // This line tells the app to use our router for any path starting with /api/endpoints
 app.use('/api/endpoints', endpointRoutes);
+app.use('/api/users', userRoutes);
 
 // --- Start the Server ---
 app.listen(PORT, () => {
