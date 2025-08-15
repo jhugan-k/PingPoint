@@ -4,20 +4,22 @@
 
 A full-stack, multi-user web application designed for developers to monitor the health and uptime of their critical API endpoints in real-time.
 
-## 🚀 Live Demo
+##  Live Demo
 
 **[https://ping-point-jk.vercel.app/](https://ping-point-jk.vercel.app/)**
 
 *(Note: The backend is hosted on a free Render instance, which may spin down after inactivity. The first request upon visiting might take up to 30 seconds to wake the server.)*
+Demo email: demo@pingpoint.app
+Demo password: 12345 
 
-## 📸 Application Preview
+##  Application Preview
 
 ![PingPoint Dashboard Screenshot](./Preview.png)
 *(A screenshot of the main dashboard showing several monitored endpoints)*
 
 ---
 
-## ✨ Key Features
+##  Key Features
 
 -   **Secure User Authentication:** Full authentication flow with user registration and login. Passwords are B-Hashed for security, and sessions are managed using JSON Web Tokens (JWT).
 -   **Real-Time Monitoring:** An asynchronous backend worker (`node-cron`) runs every minute to ping user-defined URLs, providing up-to-date status information.
@@ -27,7 +29,7 @@ A full-stack, multi-user web application designed for developers to monitor the 
 
 ---
 
-## 🛠️ Tech Stack & Architecture
+##  Tech Stack & Architecture
 
 This project utilizes the MERN stack with a decoupled frontend and backend architecture.
 
@@ -52,11 +54,11 @@ This project utilizes the MERN stack with a decoupled frontend and backend archi
 |
 +-----> (Pings External User APIs)
 
-## 📄 License
+##  License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
-## 📬 Contact
+##  Contact
 
 Jhugan Kartikey - [jkartikey.official@gmail.com](mailto:jkartikey.official@gmail.com)
 
