@@ -11,8 +11,9 @@ A full-stack, multi-user web application designed for developers to monitor the 
 *(Note: The backend is hosted on a free Render instance, which may spin down after inactivity. The first request upon visiting might take up to 30 seconds to wake the server.)*
 
 
-Demo email: demo@pingpoint.app
-Demo password: 12345 
+*Demo email: demo@pingpoint.app*
+
+*Demo password: 12345* 
 
 ##  Application Preview
 
