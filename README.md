@@ -45,17 +45,7 @@ This project utilizes the MERN stack with a decoupled frontend and backend archi
     -   Frontend deployed on **Vercel**.
     -   Backend API deployed on **Render**.
 
-### System Architecture
-[User] <--> [Browser]
-|
-+--> [Frontend - React on Vercel]
-| (Authenticated API Calls with JWT)
-|
-+--> [Backend - Node/Express on Render] <--> [MongoDB Atlas]
-| ^
-+-----> (Asynchronous Worker node-cron) --+ (Updates DB)
-|
-+-----> (Pings External User APIs)
+
 
 ##  License
 
