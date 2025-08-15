@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 
-// We accept a function 'onEndpointAdded' as a prop
-// This will be the function from App.jsx that refetches the data
 const AddEndpointForm = ({ onEndpointAdded }) => {
   const [name, setName] = useState('');
   const [url, setUrl] = useState('');
 
-  const handleSubmit = async (e) => {
-    // Prevents the default browser form submission (which causes a page reload)
-    e.preventDefault();
+  // Get the user object (which contains the token) from the Redux state.
+  const { user } = useSelector((state) => state.auth);
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     if (!name || !url) {
-      alert('Please fill out both name and URL.');
-      return;
+      return alert('Please fill out both name and URL.');
+    }
+    // We need the token to make an authenticated request.
+    if (!user || !user.token) {
+        return alert('You must be logged in to add an endpoint.');
     }
 
     try {
@@ -20,22 +23,19 @@ const AddEndpointForm = ({ onEndpointAdded }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          // Include the token in the Authorization header.
+          Authorization: `Bearer ${user.token}`,
         },
         body: JSON.stringify({ name, url }),
       });
 
       if (!response.ok) {
-        // If the server responds with an error status (4xx, 5xx)
         throw new Error('Failed to create endpoint');
       }
       
-      // Clear the form fields after successful submission
       setName('');
       setUrl('');
-
-      // Call the function passed down from the parent (App.jsx)
-      // to signal that it should refetch the list.
-      onEndpointAdded();
+      onEndpointAdded(); // This calls fetchEndpoints in App.jsx to refresh the list.
 
     } catch (error) {
       console.error('Error:', error);

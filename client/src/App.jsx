@@ -1,85 +1,76 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
+import Header from './components/Header.jsx';
 import AddEndpointForm from './components/AddEndpointForm.jsx';
 import EndpointCard from './components/EndpointCard.jsx';
 
 function App() {
+  const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
+
   const [endpoints, setEndpoints] = useState([]);
-  // We track the status of the *initial* page load.
-  // It can be 'loading', 'error', or 'success'.
   const [pageStatus, setPageStatus] = useState('loading');
 
-  // This function is now lean. Its only job is to fetch and update data.
-  const fetchEndpoints = async () => {
+  const fetchEndpoints = useCallback(async () => {
+    if (!user || !user.token) return;
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/endpoints`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/endpoints`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
       if (!response.ok) {
-        // If a poll fails, we don't want to crash the whole page with an error.
-        // We log it and the next poll will try again.
-        console.error('A background poll failed. The server might be temporarily down.');
-        return; // Exit the function early for this poll cycle.
+        if (response.status === 401) navigate('/login');
+        throw new Error('Could not fetch endpoints.');
       }
       const data = await response.json();
       setEndpoints(data);
-      // Once data is successfully fetched for the first time, the page status is 'success'.
       setPageStatus('success');
     } catch (error) {
-      console.error('Error fetching endpoints:', error);
-      // Only set a page-level error if the very first load fails.
-      if (pageStatus === 'loading') {
-        setPageStatus('error');
-      }
+      // FIX: Use the 'error' variable in a log.
+      console.error("Fetch Error:", error.message);
+      if (pageStatus === 'loading') setPageStatus('error');
     }
-  };
+  }, [user, navigate, pageStatus]);
 
   const handleDelete = async (endpointIdToDelete) => {
-    if (!window.confirm('Are you sure you want to delete this endpoint?')) {
-      return;
-    }
+    if (!user || !user.token) return;
+    if (!window.confirm('Are you sure you want to delete this endpoint?')) return;
+
     try {
-      const response = await fetch(`http://localhost:8000/api/endpoints/${endpointIdToDelete}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/endpoints/${endpointIdToDelete}`, {
         method: 'DELETE',
+        headers: { Authorization: `Bearer ${user.token}` },
       });
-      if (!response.ok) {
-        throw new Error('Failed to delete endpoint');
-      }
-      // Instantly update the UI by filtering the state.
+      if (!response.ok) throw new Error('Failed to delete endpoint');
       setEndpoints(currentEndpoints =>
         currentEndpoints.filter(endpoint => endpoint._id !== endpointIdToDelete)
       );
     } catch (error) {
-      console.error('Error deleting endpoint:', error);
+      // FIX: Use the 'error' variable in a log.
+      console.error("Delete Error:", error.message);
       alert('Failed to delete the endpoint.');
     }
   };
 
   useEffect(() => {
-    fetchEndpoints(); // Initial fetch
-    const intervalId = setInterval(fetchEndpoints, 5000); // Poll every 5 seconds
-    return () => clearInterval(intervalId); // Cleanup
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // The empty array is correct.
+    if (user) {
+      fetchEndpoints();
+      const intervalId = setInterval(fetchEndpoints, 5000);
+      return () => clearInterval(intervalId);
+    } else {
+      navigate('/login');
+    }
+  }, [user, navigate, fetchEndpoints]);
 
-  // This logic now correctly decides what to show on the page.
   const renderContent = () => {
-    if (pageStatus === 'loading') {
-      return <p className="text-center text-gray-400">Loading dashboard...</p>;
-    }
-    if (pageStatus === 'error') {
-      return <p className="text-center text-red-500">Error: Could not load initial data. Please ensure the server is running and refresh the page.</p>;
-    }
-    // This condition handles a successful load that returns no data.
-    if (endpoints.length === 0) {
-      return <p className="text-center text-gray-400">You're not monitoring any endpoints yet. Add one above to get started!</p>;
-    }
-    // The success case: render the grid.
+    if (pageStatus === 'loading') return <p className="text-center text-gray-400">Loading dashboard...</p>;
+    if (pageStatus === 'error') return <p className="text-center text-red-500">Error: Could not load data.</p>;
+    if (endpoints.length === 0) return <p className="text-center text-gray-400">No endpoints monitored. Add one!</p>;
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {endpoints.map((endpoint) => (
-          <EndpointCard
-            key={endpoint._id}
-            endpoint={endpoint}
-            onDelete={handleDelete}
-          />
+          <EndpointCard key={endpoint._id} endpoint={endpoint} onDelete={handleDelete} />
         ))}
       </div>
     );
@@ -87,11 +78,7 @@ function App() {
 
   return (
     <div className="bg-slate-900 min-h-screen text-white">
-      <header className="bg-slate-800 p-4 shadow-md">
-        <h1 className="text-3xl font-bold text-center text-cyan-400">
-          PingPoint Dashboard
-        </h1>
-      </header>
+      <Header />
       <main className="p-8">
         <AddEndpointForm onEndpointAdded={fetchEndpoints} />
         <h2 className="text-2xl font-semibold my-6">Monitored Endpoints</h2>
