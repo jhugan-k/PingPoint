@@ -18,7 +18,7 @@ A full-stack, multi-user web application designed for developers to monitor the 
 
 ##  Application Preview
 
-![PingPoint Dashboard Screenshot](./dashboard-screenshot.png)
+![PingPoint Dashboard Screenshot](./Preview.png)
 
 ---
 
