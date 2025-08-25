@@ -48,11 +48,3 @@ This project utilizes the MERN stack with a decoupled frontend and backend archi
 
 ---
 
-
-    The frontend will be available at `http://localhost:5173`.
-
-### Environment Variables
-
-You will need to create two `.env` files for the project to run locally.
-
-**1. Backend (`/server/.env`):**
